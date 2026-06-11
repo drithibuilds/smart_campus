@@ -54,6 +54,10 @@ router.post('/login', async (req, res) => {
   }
 });
 
+console.log("Login attempt:", email);
+console.log("Stored password:", user.password);
+console.log("Length:", user.password.length);
+
 // LOGOUT
 router.post('/logout', (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
