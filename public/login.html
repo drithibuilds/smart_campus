@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Login · Smart Campus CCMS</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="logo">SC</div>
+      <h1>Smart Campus CCMS</h1>
+    </div>
+    <h2>Welcome back 👋</h2>
+    <p class="sub">Sign in to manage and track campus complaints.</p>
+
+    <div id="alert"></div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="you@campus.edu" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="••••••••" />
+      </div>
+      <button class="btn" type="submit">Sign In</button>
+    </form>
+
+    <p class="foot">New here? <a href="/register.html">Create an account</a></p>
+    <p class="foot" style="margin-top:6px;font-size:12px;opacity:.7">
+      Default admin: <b>admin@campus.edu</b> / <b>Admin@123</b>
+    </p>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('loginForm');
+const alertBox = document.getElementById('alert');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  alertBox.innerHTML = '';
+  const data = Object.fromEntries(new FormData(form).entries());
+  const r = await fetch('/api/auth/login', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  const j = await r.json();
+  if (!r.ok) {
+    alertBox.innerHTML = `<div class="alert err">${j.error || 'Login failed'}</div>`;
+    return;
+  }
+  window.location.href = '/dashboard.html';
+});
+</script>
+</body>
+</html>

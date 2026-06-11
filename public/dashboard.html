@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard · Smart Campus CCMS</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">SC</div>
+      <h1>Campus CCMS</h1>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-tab="overview" class="active"><span class="ic">📊</span>Overview</button>
+      <button data-tab="complaints"><span class="ic">📝</span>Complaints</button>
+      <button data-tab="department"><span class="ic">🏢</span>Department</button>
+      <button data-tab="staff"><span class="ic">👥</span>Staff & Assign</button>
+      <button data-tab="history"><span class="ic">🕘</span>History</button>
+    </nav>
+    <div style="position:absolute;bottom:18px;left:14px;right:14px">
+      <button class="btn ghost" id="logoutBtn">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <h2 id="pageTitle">Overview</h2>
+      <div class="top-right">
+        <div class="bell" id="bell" title="Notifications">🔔<span class="dot" id="notifDot" style="display:none">0</span></div>
+        <div class="avatar" id="avatar">U</div>
+        <div>
+          <div style="font-size:13px" id="userName">User</div>
+          <div style="font-size:11px;color:var(--muted)" id="userRole">role</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ OVERVIEW ============ -->
+    <section class="content active" id="tab-overview">
+      <div class="section-head">
+        <div><h3>Welcome back, <span id="hiName">there</span> 👋</h3>
+          <p>A real-time snapshot of campus complaints.</p></div>
+        <button class="btn sm" id="quickRaise">＋ New Complaint</button>
+      </div>
+      <div class="cards">
+        <div class="card"><div class="label">Total Complaints</div><div class="num info" id="kTotal">0</div></div>
+        <div class="card"><div class="label">Pending</div><div class="num warn" id="kPending">0</div></div>
+        <div class="card"><div class="label">In Progress</div><div class="num info" id="kProgress">0</div></div>
+        <div class="card"><div class="label">Resolved</div><div class="num ok" id="kResolved">0</div></div>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">Recent Complaints</h3>
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Created</th></tr></thead>
+          <tbody id="recentTbody"><tr><td colspan="6" style="text-align:center;color:var(--muted)">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ COMPLAINTS ============ -->
+    <section class="content" id="tab-complaints">
+      <div class="section-head">
+        <div><h3>Complaints</h3><p>Submit and track campus complaints.</p></div>
+        <button class="btn sm" id="raiseBtn">＋ Raise Complaint</button>
+      </div>
+
+      <div class="panel" id="raisePanel" style="display:none">
+        <h3 style="margin-top:0">New Complaint</h3>
+        <div id="raiseAlert"></div>
+        <form id="complaintForm" class="form-grid">
+          <div class="field"><label>Title</label><input name="title" required /></div>
+          <div class="field"><label>Category / Department</label>
+            <select name="category" id="catSel" required></select></div>
+          <div class="field"><label>Location</label><input name="location" placeholder="Block / Hostel / Room…" /></div>
+          <div class="field"><label>Priority</label>
+            <select name="priority"><option>Low</option><option selected>Medium</option><option>High</option></select></div>
+          <div class="field full"><label>Description</label>
+            <textarea name="description" rows="4" required></textarea></div>
+          <div class="full" style="display:flex;gap:10px">
+            <button class="btn" type="submit" style="flex:1">Submit Complaint</button>
+            <button class="btn ghost" type="button" id="cancelRaise" style="flex:0 0 160px">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Assigned</th><th>Created</th><th></th></tr></thead>
+          <tbody id="complaintsTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ DEPARTMENT ============ -->
+    <section class="content" id="tab-department">
+      <div class="section-head"><div><h3>Department Dashboard</h3>
+        <p>Complaints grouped by department.</p></div></div>
+      <div class="cards" id="deptCards"></div>
+    </section>
+
+    <!-- ============ STAFF & ASSIGN ============ -->
+    <section class="content" id="tab-staff">
+      <div class="section-head"><div><h3>Staff & Assignments</h3>
+        <p>View staff members and assign complaints.</p></div></div>
+      <div class="panel">
+        <h3 style="margin-top:0">Staff Members</h3>
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Phone</th></tr></thead>
+          <tbody id="staffTbody"></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">Pending / In-Progress Complaints</h3>
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Status</th><th>Assign To</th><th></th></tr></thead>
+          <tbody id="assignTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ HISTORY ============ -->
+    <section class="content" id="tab-history">
+      <div class="section-head"><div><h3>History</h3>
+        <p>All resolved complaints &amp; activity log.</p></div></div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Status</th><th>Last Update</th><th></th></tr></thead>
+          <tbody id="historyTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Details Modal -->
+<div class="modal" id="modal">
+  <div class="box">
+    <button class="close-x" id="modalClose">×</button>
+    <h3 id="mTitle">Complaint</h3>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal" id="notifModal">
+  <div class="box">
+    <button class="close-x" id="notifClose">×</button>
+    <h3>Notifications</h3>
+    <div id="notifList" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

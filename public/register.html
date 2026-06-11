@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Register · Smart Campus CCMS</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="logo">SC</div>
+      <h1>Smart Campus CCMS</h1>
+    </div>
+    <h2>Create account</h2>
+    <p class="sub">Register to submit and track complaints.</p>
+
+    <div id="alert"></div>
+
+    <form id="regForm">
+      <div class="field">
+        <label>Full Name</label>
+        <input name="name" required placeholder="Jane Doe" />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="you@campus.edu" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" required minlength="6" />
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input name="phone" placeholder="optional" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Role</label>
+          <select name="role" id="role">
+            <option value="student">Student</option>
+            <option value="staff">Staff (Department)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Department</label>
+          <select name="department" id="dept">
+            <option value="">— Not applicable —</option>
+            <option>Infrastructure</option>
+            <option>Hostel</option>
+            <option>Network/IT</option>
+            <option>Cleanliness</option>
+            <option>Academics</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" type="submit">Create Account</button>
+    </form>
+    <p class="foot">Already have an account? <a href="/login.html">Sign in</a></p>
+  </div>
+</div>
+<script>
+const form = document.getElementById('regForm');
+const alertBox = document.getElementById('alert');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  alertBox.innerHTML='';
+  const data = Object.fromEntries(new FormData(form).entries());
+  const r = await fetch('/api/auth/register',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  const j = await r.json();
+  if (!r.ok){alertBox.innerHTML=`<div class="alert err">${j.error||'Failed'}</div>`;return;}
+  alertBox.innerHTML = `<div class="alert ok">Account created! Redirecting…</div>`;
+  setTimeout(()=>window.location.href='/login.html', 1000);
+});
+</script>
+</body>
+</html>
